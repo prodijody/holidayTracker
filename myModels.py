@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from time import time
 from config_file import app_settings
+import jwt
 
 app = Flask(__name__)
 

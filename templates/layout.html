@@ -24,9 +24,6 @@
         <h1><a class="navbar-brand" href="{{ url_for('index') }}" style="margin: 5px 0;">Holiday</a><span>Tracker</span></h1>
       </div>
       <div class="row text-center" style="padding: 0;">
-        <div class="col">
-          <h5><a href="{{ url_for('index') }}" class="navbar-right">Home</a></h5>
-        </div>
         {% if current_user.is_authenticated %}
         <div class="col">
             <h5><a href="#" class="navbar-right">Something</a></h5>

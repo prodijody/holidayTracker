@@ -3,8 +3,8 @@
 {% block body %}
 <div class="container">
   <div class="row no-margin grey-info-block text-center" style="padding: 70px 0;">
-    <div class="col-md-5">
-      <div class="container signup_form">
+    <div class="col-md">
+      <div class="container-fluid login_form">
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
@@ -20,9 +20,23 @@
           {{ wtf.form_field(form.password) }}
           <input type="submit" class="btn btn-success btn-md" value="Login">
         </form>
+        <small><a href="javascript:void(0)" onclick="show('#reset_password_form')">Forgot password?</a></small>
+        <div id='reset_password_form' style="display: none;">
+          <form action="{{ url_for('index') }}" method="POST">
+            {{ form2.hidden_tag() }}
+            {{ wtf.form_field(form2.email) }}
+            <input type="submit" class="btn btn-success btn-md" value="Send">
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
-
+{% block extrajs %}
+<script type="text/javascript">
+  function show(a){
+    $(a).toggle();
+  }
+</script>
+{% endblock %}
