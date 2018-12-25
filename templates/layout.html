@@ -1,0 +1,62 @@
+<html>
+<head>
+  <title>JTcleaning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="{{ url_for('static', filename='css/bootstrap2.min.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,700,800" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+      <![endif]-->
+  {% block extracss %}
+  {% endblock %}
+  {{ moment.include_jquery() }}
+  {{ moment.include_moment() }}
+  </head>
+<body>
+
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <h1><a class="navbar-brand" href="{{ url_for('index') }}" style="margin: 5px 0;">Holiday</a><span>Tracker</span></h1>
+      </div>
+      <div class="row text-center" style="padding: 0;">
+        <div class="col">
+          <h5><a href="{{ url_for('index') }}" class="navbar-right">Home</a></h5>
+        </div>
+        {% if current_user.is_authenticated %}
+        <div class="col">
+            <h5><a href="#" class="navbar-right">Something</a></h5>
+        </div>
+        <div class="col">
+            <h5><a href="{{ url_for('logout') }}" class="navbar-right">Logout</a></h5>
+        </div>
+        {% else %}
+        <div class="col">
+            <h5><a href="{{ url_for('index') }}" class="navbar-right">Login</a></h5>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  {% block body %}
+  {% endblock %}
+
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous">
+  </script>
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous">
+  </script>
+  {% block extrajs %}
+  {% endblock %}
+  </body>
+</html>

@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block body %}
+<div class="container">
+  <div class="row no-margin grey-info-block text-center" style="padding: 70px 0;">
+    <div class="col-md-5">
+      <div class="container signup_form">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{category}}" role="alert">
+              {{ message }}
+            </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form action="{{ url_for('index') }}" method="POST">
+          {{ form.hidden_tag() }}
+          {{ wtf.form_field(form.email) }}
+          {{ wtf.form_field(form.password) }}
+          <input type="submit" class="btn btn-success btn-md" value="Login">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
