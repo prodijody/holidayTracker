@@ -14,7 +14,7 @@ from functools import wraps
 from werkzeug.utils import secure_filename
 from myEmail import sendEmail, generate_confirmation_token, confirm_token
 from forms import LoginForm, RecoverPasswordForm, ResetPasswordForm, AddUserForm
-
+from config_file import random_string
 
 Bootstrap(app)
 login_manager = LoginManager()
@@ -136,7 +136,12 @@ def add_user():
       return redirect(url_for('add_user'))
 
     # add user to db
-    new_user = User(name=name, surname=surname, email=email, system_role=system_role)
+    new_user = User(
+      name=name,
+      surname=surname,
+      email=email,
+      password=generate_password_hash(random_string['_'], method='sha256'),
+      system_role=system_role)
     db.session.add(new_user)
     db.session.commit()
 

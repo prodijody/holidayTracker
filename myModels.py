@@ -23,8 +23,8 @@ class User(db.Model, UserMixin):
   email = db.Column(db.String(20), unique=True, nullable=False)
   password = db.Column(db.String(85))
   system_role = db.Column(db.Integer)
-  # holidays_requests = db.relationship('HolidayRequest', backref='requester')
-  # holidays_quota = db.Column(db.Integer)
+  holidays_requests = db.relationship('HolidayRequest', backref='requester')
+  holidays_quota = db.Column(db.Integer)
 
   def is_admin(self):
     admin_role = SystemRole.query.filter_by(name='Admin').first().id
@@ -63,7 +63,7 @@ class HolidayRequest(db.Model):
 
 
 
-# Example relationship
+# # Example relationship
 # class Person(db.Model):
 #   id = db.Column(db.Integer, primary_key=True)
 #   name = db.Column(db.String(20))
