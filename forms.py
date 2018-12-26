@@ -18,3 +18,9 @@ class AddUserForm(FlaskForm):
     surname = StringField('Surname', validators=[])
     email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email!')])
     system_role = SelectField('System Role', coerce=int)
+    holidays_quota = IntegerField('Holidays quota', validators=[InputRequired()])
+
+class RequestHolidaysForm(FlaskForm):
+    date_from = DateField('From', format='%d-%m-%Y', validators=[InputRequired()], id='datepicker1')
+    date_to = DateField('To', format='%d-%m-%Y', validators=[InputRequired()], id='datepicker2')
+    comment = TextAreaField('Comment', validators=[])

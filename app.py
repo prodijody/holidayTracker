@@ -13,7 +13,7 @@ from itsdangerous import URLSafeTimedSerializer
 from functools import wraps
 from werkzeug.utils import secure_filename
 from myEmail import sendEmail, generate_confirmation_token, confirm_token
-from forms import LoginForm, RecoverPasswordForm, ResetPasswordForm, AddUserForm
+from forms import LoginForm, RecoverPasswordForm, ResetPasswordForm, AddUserForm, RequestHolidaysForm
 from config_file import random_string
 
 Bootstrap(app)
@@ -22,7 +22,7 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 moment = Moment(app)
-from myModels import db, User, SystemRole
+from myModels import db, User, SystemRole, HolidayRequest
 
 # USER LOADER
 @login_manager.user_loader
@@ -84,11 +84,10 @@ def index():
       return render_template('index.html', form=loginForm, form2=resetPasswordForm)
 
 
-
 @app.route('/recover_password/<recover_token>', methods=['GET','POST'])
 def recover_password(recover_token):
   if current_user.is_authenticated:
-    return redirect(url_for('index'))
+    return redirect(url_for('menu'))
   else:
     verify_token = User.verify_reset_password_token(recover_token)
     if not verify_token:
@@ -117,7 +116,7 @@ def recover_password(recover_token):
 def add_user():
   if not current_user.is_admin():
     flash('That area is restricted to admins.','info')
-    return redirect(url_for('index'))
+    return redirect(url_for('menu'))
 
   existing_users = User.query.all()
   addUserForm = AddUserForm()
@@ -128,6 +127,7 @@ def add_user():
     surname = escape(addUserForm.surname.data)
     email = escape(addUserForm.email.data)
     system_role = escape(addUserForm.system_role.data)
+    holidays_quota = escape(addUserForm.holidays_quota.data)
 
     # check email exists
     email_exists = User.query.filter_by(email=email).first()
@@ -141,7 +141,8 @@ def add_user():
       surname=surname,
       email=email,
       password=generate_password_hash(random_string['_'], method='sha256'),
-      system_role=system_role)
+      system_role=system_role,
+      holidays_quota=holidays_quota)
     db.session.add(new_user)
     db.session.commit()
 
@@ -164,6 +165,58 @@ def add_user():
 @login_required
 def menu():
   return render_template('protected/menu.html')
+
+
+
+# Admin route
+@app.route('/admin', methods=['GET'])
+@login_required
+def admin():
+  if not current_user.is_admin():
+    flash('That area is restricted to admins.','info')
+    return redirect(url_for('menu'))
+
+  staff_members = User.query.all()
+  return render_template('protected/admin.html', staff_members=staff_members)
+
+
+@app.route('/request_holidays', methods=['GET','POST'])
+@login_required
+def request_holidays():
+  requestHolidaysForm = RequestHolidaysForm()
+  if request.method == 'POST' and requestHolidaysForm.validate_on_submit():
+    # escape form input
+    date_from = escape(requestHolidaysForm.date_from.data)
+    date_to = escape(requestHolidaysForm.date_to.data)
+    comment = escape(requestHolidaysForm.comment.data)
+
+    # do some checking before anything else
+
+    # add request to DB
+    new_request = HolidayRequest(
+      user_id=current_user.id,
+      date_from=date_from,
+      date_to=date_to,
+      comment=comment)
+    db.session.add(new_request)
+    db.session.commit()
+
+    # email user
+    html = render_template('email_templates/user_holiday_request.html', date_from=date_from, date_to=date_to, comment=comment)
+    sendEmail(email_subject='Your holiday request', recipients=[current_user.email], email_html=html)
+
+    # email manager
+    user = current_user.name + ' ' + current_user.surname
+    html2 = render_template('email_templates/admin_holiday_request.html', date_from=date_from, date_to=date_to, comment=comment, user=user)
+    ADMIN_ROLE = SystemRole.query.filter_by(name='Admin').first().id
+    THE_ADMIN = User.query.filter_by(system_role=ADMIN_ROLE).first().email
+    sendEmail(email_subject='NEW holiday request', recipients=[THE_ADMIN], email_html=html2)
+
+    flash('Your request has been submitted. An email has been sent to you and your manager.','success')
+    return redirect(url_for('request_holidays'))
+
+  return render_template('protected/request_holidays.html', form=requestHolidaysForm)
+
 
 
 # 404 route

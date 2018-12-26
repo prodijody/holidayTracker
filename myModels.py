@@ -33,6 +33,9 @@ class User(db.Model, UserMixin):
   def get_system_role(self):
     return SystemRole.query.filter_by(id=self.system_role).first()
 
+  def get_holidays(self):
+    return self.holidays_requests
+
   def get_recover_password_token(self, expires_in=600):
     return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
@@ -56,21 +59,9 @@ class SystemRole(db.Model):
 class HolidayRequest(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-  date_from = db.Column(db.DateTime())
-  date_to = db.Column(db.DateTime())
+  date_from = db.Column(db.String(20))
+  date_to = db.Column(db.String(20))
+  comment = db.Column(db.Text())
   approved = db.Column(db.Boolean(), default=False)
 
-
-
-
-# # Example relationship
-# class Person(db.Model):
-#   id = db.Column(db.Integer, primary_key=True)
-#   name = db.Column(db.String(20))
-#   pets = db.relationship('Pet', backref='owner')
-
-# class Pet(db.Model):
-#   id = db.Column(db.Integer, primary_key=True)
-#   name = db.Column(db.String(20))
-#   owner_id = db.Column(db.Integer, db.ForeignKey('person.id'))
 

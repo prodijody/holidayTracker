@@ -33,11 +33,11 @@
              <a href="{{ url_for('add_user') }}" class="navbar-right">Add User</a>
           </div>
           <div class="col">
-             <a href="#" class="navbar-right">Admin</a>
+             <a href="{{ url_for('admin') }}" class="navbar-right">Admin</a>
           </div>
           {% endif %}
         <div class="col">
-           <a href="#" class="navbar-right">Request Holidays</a>
+           <a href="{{ url_for('request_holidays') }}" class="navbar-right">Request Holidays</a>
         </div>
         <div class="col">
            <a href="{{ url_for('logout') }}" class="navbar-right">Logout</a>

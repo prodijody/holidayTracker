@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block extracss %}
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{category}}" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <div class="row" style="max-width: 400px; margin: auto;  padding: 0;">
+    <div class="col">
+      <h3 class="text-center">Request holidays</h3>
+      <p>After the request is sent, both you and your manager will receive an email with the details.</p>
+      <hr>
+      <form id='request_holidays_form' action="{{ url_for('request_holidays') }}" method="POST">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.date_from) }}
+        {{ wtf.form_field(form.date_to) }}
+        {{ wtf.form_field(form.comment) }}
+        <input type="submit" class="btn btn-success btn-md" value="Request">
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extrajs %}
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $( function() {
+      $( "#datepicker1" ).datepicker({ dateFormat: 'dd-mm-yy' });
+      $( "#datepicker2" ).datepicker({ dateFormat: 'dd-mm-yy' });
+      $( "#datepicker1" ).datepicker();
+      $( "#datepicker2" ).datepicker();
+    } );
+  </script>
+{% endblock %}

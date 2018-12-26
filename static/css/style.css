@@ -1,3 +1,11 @@
 .login_form{
     max-width: 350px;
 }
+
+.card{
+    max-width: 300px!important;
+}
+
+a:hover{
+    text-decoration: none!important;
+}
