@@ -22,15 +22,21 @@ class User(db.Model, UserMixin):
   surname = db.Column(db.String(30))
   email = db.Column(db.String(20), unique=True, nullable=False)
   password = db.Column(db.String(85))
-  confirmed = db.Column(db.Boolean(), default=False, nullable=False)
-  confirmed_on = db.Column(db.DateTime(), nullable=True)
+  system_role = db.Column(db.Integer)
+  # holidays_requests = db.relationship('HolidayRequest', backref='requester')
+  # holidays_quota = db.Column(db.Integer)
 
+  def is_admin(self):
+    admin_role = SystemRole.query.filter_by(name='Admin').first().id
+    return self.system_role == admin_role
+
+  def get_system_role(self):
+    return SystemRole.query.filter_by(id=self.system_role).first()
 
   def get_recover_password_token(self, expires_in=600):
     return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
-
 
   @staticmethod
   def verify_reset_password_token(token):
@@ -39,3 +45,32 @@ class User(db.Model, UserMixin):
     except:
         return
     return User.query.get(id)
+
+
+
+class SystemRole(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String(20), nullable=False)
+
+
+class HolidayRequest(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+  date_from = db.Column(db.DateTime())
+  date_to = db.Column(db.DateTime())
+  approved = db.Column(db.Boolean(), default=False)
+
+
+
+
+# Example relationship
+# class Person(db.Model):
+#   id = db.Column(db.Integer, primary_key=True)
+#   name = db.Column(db.String(20))
+#   pets = db.relationship('Pet', backref='owner')
+
+# class Pet(db.Model):
+#   id = db.Column(db.Integer, primary_key=True)
+#   name = db.Column(db.String(20))
+#   owner_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+

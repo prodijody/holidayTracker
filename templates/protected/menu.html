@@ -2,9 +2,18 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block body %}
 <div class="container">
-  <div class="row no-margin grey-info-block text-center" style="padding: 70px 0;">
-    <div class="col-md-5">
-      <h1>Protected route</h1>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{category}}" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <div class="row" style="padding: 0;">
+    <div class="col">
+      <p>some dashboard</p>
     </div>
   </div>
 </div>

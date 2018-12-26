@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>JTcleaning</title>
+  <title>holidayTracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link href="{{ url_for('static', filename='css/bootstrap2.min.css') }}" rel="stylesheet">
@@ -26,14 +26,25 @@
       <div class="row text-center" style="padding: 0;">
         {% if current_user.is_authenticated %}
         <div class="col">
-            <h5><a href="#" class="navbar-right">Something</a></h5>
+           <a href="{{ url_for('index') }}" class="navbar-right">Dashboard</a>
+        </div>
+          {% if current_user.is_admin() %}
+          <div class="col">
+             <a href="{{ url_for('add_user') }}" class="navbar-right">Add User</a>
+          </div>
+          <div class="col">
+             <a href="#" class="navbar-right">Admin</a>
+          </div>
+          {% endif %}
+        <div class="col">
+           <a href="#" class="navbar-right">Request Holidays</a>
         </div>
         <div class="col">
-            <h5><a href="{{ url_for('logout') }}" class="navbar-right">Logout</a></h5>
+           <a href="{{ url_for('logout') }}" class="navbar-right">Logout</a>
         </div>
         {% else %}
         <div class="col">
-            <h5><a href="{{ url_for('index') }}" class="navbar-right">Login</a></h5>
+           <a href="{{ url_for('index') }}" class="navbar-right">Login</a>
         </div>
         {% endif %}
       </div>

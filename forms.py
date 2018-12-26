@@ -12,3 +12,9 @@ class RecoverPasswordForm(FlaskForm):
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('New Password', validators=[InputRequired(), Length(min=6, max=40, message='Your password must be at least 6 characters long and a mix of letters, numbers and special symbols.')])
     password2 = PasswordField('New Password', validators=[InputRequired(), Length(min=6, max=40, message='Your password must be at least 6 characters long and a mix of letters, numbers and special symbols.')])
+
+class AddUserForm(FlaskForm):
+    name = StringField('Name', validators=[InputRequired()])
+    surname = StringField('Surname', validators=[])
+    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email!')])
+    system_role = SelectField('System Role', coerce=int)

@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block body %}
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{category}}" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <div class="row" style="padding: 0;">
+    <div class="col-md-6">
+      <h4>Add New User</h4>
+      <form action="{{ url_for('add_user') }}" method="POST">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.name)}}
+        {{ wtf.form_field(form.surname)}}
+        {{ wtf.form_field(form.email) }}
+        {{ wtf.form_field(form.system_role) }}
+        <input type="submit" class="btn btn-success btn-md" value="Add user">
+      </form>
+    </div>
+    <div class="col-md-6">
+      <h4>Existing Users</h4>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>System Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in existing_users %}
+            <tr>
+              <td>{{ user.id }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.surname }}</td>
+              <td>{{ user.get_system_role().name }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
