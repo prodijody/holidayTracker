@@ -33,8 +33,14 @@ class User(db.Model, UserMixin):
   def get_system_role(self):
     return SystemRole.query.filter_by(id=self.system_role).first()
 
-  def get_holidays(self):
-    return self.holidays_requests
+  def get_holidays_requests(self):
+    total_approved = len([h for h in self.holidays_requests if h.approved])
+    holidays = {
+      'total_unapproved' : len([h for h in self.holidays_requests if not h.approved]),
+      'total_approved' : total_approved,
+      'balance' : self.holidays_quota - total_approved
+    }
+    return holidays
 
   def get_recover_password_token(self, expires_in=600):
     return jwt.encode(

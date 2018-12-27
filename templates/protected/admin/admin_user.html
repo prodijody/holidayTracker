@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block body %}
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{category}}" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <div class="row" style="padding: 0;">
+    <div class="col">
+
+    </div>
+  </div>
+</div>
+{% endblock %}

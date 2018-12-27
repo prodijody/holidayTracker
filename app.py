@@ -157,27 +157,11 @@ def add_user():
   return render_template('protected/add_user.html', form=addUserForm, existing_users=existing_users)
 
 
-
-
-
 # Menu route
 @app.route('/menu', methods=['GET','POST'])
 @login_required
 def menu():
   return render_template('protected/menu.html')
-
-
-
-# Admin route
-@app.route('/admin', methods=['GET'])
-@login_required
-def admin():
-  if not current_user.is_admin():
-    flash('That area is restricted to admins.','info')
-    return redirect(url_for('menu'))
-
-  staff_members = User.query.all()
-  return render_template('protected/admin.html', staff_members=staff_members)
 
 
 @app.route('/request_holidays', methods=['GET','POST'])
@@ -217,6 +201,37 @@ def request_holidays():
 
   return render_template('protected/request_holidays.html', form=requestHolidaysForm)
 
+
+
+#############
+#'''Admin'''#
+#############
+
+# Admin route
+@app.route('/admin', methods=['GET'])
+@login_required
+def admin():
+  if not current_user.is_admin():
+    flash('That area is restricted to admins.','info')
+    return redirect(url_for('menu'))
+
+  staff_members = User.query.all()
+  return render_template('protected/admin/admin.html', staff_members=staff_members)
+
+
+@app.route('/admin/user/<user_id>')
+@login_required
+def admin_user(user_id):
+  if not current_user.is_admin():
+    flash('That area is restricted to admins.','info')
+    return redirect(url_for('menu'))
+  user_id = escape(user_id)
+  user = User.query.get(user_id)
+  if user:
+    pass
+  else:
+    flash('User id {user_id} does not exist.'.format(user_id=user_id), 'danger')
+  return render_template('protected/admin/admin_user.html', user=user)
 
 
 # 404 route
