@@ -1,0 +1,22 @@
+<h1>Update to your holidays request</h1>
+
+<p>Your holidays request:</p>
+
+<div class="row">
+    <div class="col"><strong>From</strong></div>
+    <div class="col">{{ date_from }}</div>
+</div>
+<br>
+<div class="row">
+    <div class="col"><strong>To</strong></div>
+    <div class="col">{{ date_to }}</div>
+</div>
+<br>
+<div class="row">
+    <div class="col"><strong>Comment</strong></div>
+    <div class="col font-italic">" {{ comment }} "</div>
+</div>
+
+<p>has been: <span style="text-transform: uppercase; color: blue; font-weight: bold;">{{ status }}</span></p>
+<p>Here is your manager's comment:</p>
+<p>" <i>{{ manager_comment }}</i> "</p>

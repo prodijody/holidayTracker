@@ -247,8 +247,8 @@ def admin_user(user_id):
         db.session.commit()
         flash('Holiday request updated successfuly. An email has been sent to both you and the staff member.','success')
 
-        # sendEmail() manager
-        # sendEmail() user
+        html = render_template('email_templates/request_updated.html', date_from=find_request.date_from, date_to=find_request.date_to, comment=find_request.comment, status=find_request.status, manager_comment=find_request.manager_comment)
+        sendEmail(email_subject='Update to your holiday request', recipients=[user.email], email_html=html)
 
         return redirect(url_for('menu'))
 
