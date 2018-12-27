@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import desc
 from flask_login import UserMixin
 from time import time
 from config_file import app_settings
@@ -44,6 +45,12 @@ class User(db.Model, UserMixin):
     }
     return holidays
 
+  def get_next_holiday(self):
+    next_holiday = HolidayRequest.query.filter_by(user_id=self.id, status='Approved').first()
+    if not next_holiday:
+      return 0
+    return next_holiday
+
   def get_recover_password_token(self, expires_in=600):
     return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
@@ -57,6 +64,9 @@ class User(db.Model, UserMixin):
         return
     return User.query.get(id)
 
+  @staticmethod
+  def get_year():
+    return datetime.utcnow().year
 
 
 class SystemRole(db.Model):
@@ -80,3 +90,16 @@ class HolidayRequest(db.Model):
     d2 = datetime.strptime(self.date_to, date_format)
     delta = d2 - d1
     return delta.days + 1
+
+  def is_past(self):
+    date_format = "%Y-%m-%d"
+    today = datetime.utcnow()
+    date_to = datetime.strptime(self.date_to, date_format)
+    return today > date_to
+
+  def get_days_left_until_next_holidays(self):
+    date_format = "%Y-%m-%d"
+    d1 = datetime.utcnow()
+    d2 = datetime.strptime(self.date_from, date_format)
+    delta = d2 - d1
+    return delta.days

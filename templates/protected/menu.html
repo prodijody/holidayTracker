@@ -11,9 +11,139 @@
       {% endfor %}
     {% endif %}
   {% endwith %}
+  <p>Your next holiday is in FIX ME</p>
+  <br>
+  <div class="card-group">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Balance</h4>
+        <p class="card-text">{{ current_user.get_holidays_requests()['balance'] }} days</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Taken</h4>
+        <p class="card-text">{{ current_user.get_holidays_requests()['days_approved'] }} days</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Bank Holidays for {{ current_user.get_year() }}</h4>
+        <table class="table table-sm" style="font-size: 12px;">
+          <tbody>
+              <tr>
+                <td class="calendar-date"> 1 January</td>
+                <td class="calendar-day">Tuesday</td>
+                <td class="calendar-title">New Year’s Day</td>
+              </tr>
+              <tr>
+                <td class="calendar-date">19 April</td>
+                <td class="calendar-day">Friday</td>
+                <td class="calendar-title">Good Friday</td>
+              </tr>
+              <tr>
+                <td class="calendar-date">22 April</td>
+                <td class="calendar-day">Monday</td>
+                <td class="calendar-title">Easter Monday</td>
+              </tr>
+              <tr>
+                <td class="calendar-date"> 6 May</td>
+                <td class="calendar-day">Monday</td>
+                <td class="calendar-title">Early May bank holiday</td>
+              </tr>
+              <tr>
+                <td class="calendar-date">27 May</td>
+                <td class="calendar-day">Monday</td>
+                <td class="calendar-title">Spring bank holiday</td>
+              </tr>
+              <tr>
+                <td class="calendar-date">26 August</td>
+                <td class="calendar-day">Monday</td>
+                <td class="calendar-title">Summer bank holiday</td>
+              </tr>
+              <tr>
+                <td class="calendar-date">25 December</td>
+                <td class="calendar-day">Wednesday</td>
+                <td class="calendar-title">Christmas Day</td>
+              </tr>
+              <tr>
+                <td class="calendar-date">26 December</td>
+                <td class="calendar-day">Thursday</td>
+                <td class="calendar-title">Boxing Day</td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
   <div class="row" style="padding: 0;">
-    <div class="col">
-
+    <div class="col-6">
+      <h4>Approved requests</h4>
+      <table class="table table-responsive">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Requested</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for request in current_user.holidays_requests %}
+            {% if (request.status == 'Approved' or request.status == 'Pending' ) and not request.is_past() %}
+            <tr>
+              <td>{{ request.id }}</td>
+              <td>{{ moment(request.timestamp).calendar() }}</td>
+              <td>{{ request.date_from }}</td>
+              <td>{{ request.date_to }}</td>
+              {% if request.status == 'Approved' %}
+                <td><span class="badge-success badge">{{ request.status }}</span></td>
+              {% elif request.status == 'Declined' %}
+                <td><span class="badge-danger badge">{{ request.status }}</span></td>
+              {% else %}
+                <td><span class="badge-warning badge">{{ request.status }}</span></td>
+              {% endif %}
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-6">
+      <h4>Past requests</h4>
+      <table class="table table-responsive">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Requested</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for request in current_user.holidays_requests %}
+            {% if request.is_past() or request.status == 'Declined' or request.status == 'Cancelled'  %}
+            <tr>
+              <td>{{ request.id }}</td>
+              <td>{{ moment(request.timestamp).calendar() }}</td>
+              <td>{{ request.date_from }}</td>
+              <td>{{ request.date_to }}</td>
+              {% if request.status == 'Approved' %}
+                <td><span class="badge-secondary badge">Completed</span></td>
+              {% elif request.status == 'Declined' %}
+                <td><span class="badge-danger badge">{{ request.status }}</span></td>
+              {% else %}
+                <td><span class="badge-warning badge">{{ request.status }}</span></td>
+              {% endif %}
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

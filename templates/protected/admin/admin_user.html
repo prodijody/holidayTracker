@@ -45,7 +45,9 @@
                 {% else %}
                   <td><span class="badge-warning badge">{{ request.status }}</span></td>
                 {% endif %}
-                <td>{{ request.requester.get_holidays_requests()['balance'] }} days</td>
+                {% if request.status == 'Pending' %}
+                  <td>{{ request.requester.get_holidays_requests()['balance'] }} days</td>
+                {% endif %}
               </tr>
             {% endfor %}
           </tbody>

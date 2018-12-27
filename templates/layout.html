@@ -26,7 +26,7 @@
       <div class="row text-center" style="padding: 0;">
         {% if current_user.is_authenticated %}
         <div class="col">
-           <a href="{{ url_for('index') }}" class="navbar-right">Dashboard</a>
+           <a href="{{ url_for('menu') }}" class="navbar-right">Menu</a>
         </div>
           {% if current_user.is_admin() %}
           <div class="col">
@@ -37,7 +37,7 @@
           </div>
           {% endif %}
         <div class="col">
-           <a href="{{ url_for('request_holidays') }}" class="navbar-right">Request Holidays</a>
+           <a class="btn btn-outline-success" href="{{ url_for('request_holidays') }}" class="navbar-right">Request Holidays</a>
         </div>
         <div class="col">
            <a href="{{ url_for('logout') }}" class="navbar-right">Logout</a>
