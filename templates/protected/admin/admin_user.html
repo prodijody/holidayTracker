@@ -13,7 +13,56 @@
   {% endwith %}
   <div class="row" style="padding: 0;">
     <div class="col">
-
+      <div class="jumbotron">
+        <h1 class="display-3">{{ user.name }} {{ user.surname }}</h1>
+        <p class="lead">Holiday Requests</p>
+        <table class="table table-responsive">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Requested</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Amount</th>
+              <th>Comment</th>
+              <th>Status</th>
+              <th>Available Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for request in user.holidays_requests %}
+              <tr>
+                <td>{{ request.id }}</td>
+                <td>{{ moment(request.timestamp).calendar() }}</td>
+                <td>{{ request.date_from }}</td>
+                <td>{{ request.date_to }}</td>
+                <td>{{ request.get_days_difference() }} days</td>
+                <td class="font-italic">{{ request.comment }}</td>
+                {% if request.status == 'Approved' %}
+                  <td><span class="badge-success badge">{{ request.status }}</span></td>
+                {% elif request.status == 'Declined' %}
+                  <td><span class="badge-danger badge">{{ request.status }}</span></td>
+                {% else %}
+                  <td><span class="badge-warning badge">{{ request.status }}</span></td>
+                {% endif %}
+                <td>{{ request.requester.get_holidays_requests()['balance'] }} days</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <br>
+        <hr class="my-2">
+        <br>
+        <div class="container text-center" style="max-width: 400px;">
+          <form action="{{ url_for('admin_user',user_id=user.id) }}" method="POST">
+            {{ form.hidden_tag() }}
+            {{ wtf.form_field(form.request) }}
+            {{ wtf.form_field(form.status) }}
+            {{ wtf.form_field(form.manager_comment) }}
+            <input type="submit" class="btn btn-success btn-md" value="Update">
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </div>

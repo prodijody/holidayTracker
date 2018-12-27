@@ -24,3 +24,8 @@ class RequestHolidaysForm(FlaskForm):
     date_from = DateField('From', format='%d-%m-%Y', validators=[InputRequired()], id='datepicker1')
     date_to = DateField('To', format='%d-%m-%Y', validators=[InputRequired()], id='datepicker2')
     comment = TextAreaField('Comment', validators=[])
+
+class UpdateHolidaysRequest(FlaskForm):
+    request = SelectField('Request ID', coerce=int)
+    status = SelectField('Status', choices=[('Select one','Select one'),('Approved','Approved'), ('Pending','Pending'),('Declined','Declined'),('Cancelled','Cancelled')])
+    manager_comment = TextAreaField('Comment - will be added to the email')

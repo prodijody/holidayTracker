@@ -16,10 +16,12 @@
       {% endfor %}
     {% endif %}
   {% endwith %}
-  <div class="row" style="max-width: 400px; margin: auto;  padding: 0;">
+  <div class="row" style="max-width: 600px; margin: auto;  padding: 0;">
     <div class="col">
       <h3 class="text-center">Request holidays</h3>
       <p>After the request is sent, both you and your manager will receive an email with the details.</p>
+      <small>Your annual leave is comprised of: <br>- <strong>bank-holidays (approx. 8 days <a target="_blank" href="https://www.gov.uk/bank-holidays">check gov.uk</a>) <br>- your birthday day (1 day) <br>- and the remainder as  <i>free-to-choose</i> days</strong>.</small><br><br>
+      <small>Your allowance of <strong>{{ current_user.holidays_quota }}</strong> days only includes days you can freely choose and your birthday day. Bank-holidays are mandatory to be taken on their respective day.</small>
       <hr>
       <form id='request_holidays_form' action="{{ url_for('request_holidays') }}" method="POST">
         {{ form.hidden_tag() }}

@@ -24,17 +24,16 @@
               </div>
               <div class="row" style="padding: 10px 0;">
                 <div class="col"><span class="badge badge-success">Holidays Approved</span></div>
-                <div class="col">{{ current_user.get_holidays_requests()['total_approved'] }}</div>
+                <div class="col">{{ staff.get_holidays_requests()['days_approved'] }} days</div>
               </div>
               <div class="row" style="padding: 10px 0;">
                 <div class="col"><span class="badge badge-warning">Pending Approval</span></div>
-                <div class="col">{{ current_user.get_holidays_requests()['total_unapproved'] }}</div>
+                <div class="col">{{ staff.get_holidays_requests()['days_unapproved'] }} days</div>
               </div>
               <div class="row" style="padding: 10px 0;">
                 <div class="col"><span class="badge badge-info">Remaining Balance</span></div>
-                <div class="col">{{ current_user.get_holidays_requests()['balance'] }} days</div>
+                <div class="col">{{ staff.get_holidays_requests()['balance'] }} days</div>
               </div>
-
             </div>
           </a>
         {% endfor %}

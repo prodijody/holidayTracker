@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
@@ -34,11 +34,13 @@ class User(db.Model, UserMixin):
     return SystemRole.query.filter_by(id=self.system_role).first()
 
   def get_holidays_requests(self):
-    total_approved = len([h for h in self.holidays_requests if h.approved])
+    days_unapproved = sum([h.get_days_difference() for h in self.holidays_requests if h.status == 'Pending'])
+    days_approved = sum([h.get_days_difference() for h in self.holidays_requests if h.status == 'Approved'])
+
     holidays = {
-      'total_unapproved' : len([h for h in self.holidays_requests if not h.approved]),
-      'total_approved' : total_approved,
-      'balance' : self.holidays_quota - total_approved
+      'days_unapproved' : days_unapproved,
+      'days_approved' : days_approved,
+      'balance' : self.holidays_quota - days_approved
     }
     return holidays
 
@@ -64,10 +66,17 @@ class SystemRole(db.Model):
 
 class HolidayRequest(db.Model):
   id = db.Column(db.Integer, primary_key=True)
+  timestamp = db.Column(db.DateTime(), default=datetime.utcnow)
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
   date_from = db.Column(db.String(20))
   date_to = db.Column(db.String(20))
   comment = db.Column(db.Text())
-  approved = db.Column(db.Boolean(), default=False)
+  status = db.Column(db.String(20))
+  manager_comment = db.Column(db.Text(), default=None, nullable=True)
 
-
+  def get_days_difference(self):
+    date_format = "%Y-%m-%d"
+    d1 = datetime.strptime(self.date_from, date_format)
+    d2 = datetime.strptime(self.date_to, date_format)
+    delta = d2 - d1
+    return delta.days + 1

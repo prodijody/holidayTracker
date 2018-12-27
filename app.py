@@ -13,7 +13,7 @@ from itsdangerous import URLSafeTimedSerializer
 from functools import wraps
 from werkzeug.utils import secure_filename
 from myEmail import sendEmail, generate_confirmation_token, confirm_token
-from forms import LoginForm, RecoverPasswordForm, ResetPasswordForm, AddUserForm, RequestHolidaysForm
+from forms import LoginForm, RecoverPasswordForm, ResetPasswordForm, AddUserForm, RequestHolidaysForm, UpdateHolidaysRequest
 from config_file import random_string
 
 Bootstrap(app)
@@ -181,7 +181,8 @@ def request_holidays():
       user_id=current_user.id,
       date_from=date_from,
       date_to=date_to,
-      comment=comment)
+      comment=comment,
+      status='Pending')
     db.session.add(new_request)
     db.session.commit()
 
@@ -219,7 +220,7 @@ def admin():
   return render_template('protected/admin/admin.html', staff_members=staff_members)
 
 
-@app.route('/admin/user/<user_id>')
+@app.route('/admin/user/<user_id>', methods=['GET','POST'])
 @login_required
 def admin_user(user_id):
   if not current_user.is_admin():
@@ -228,10 +229,33 @@ def admin_user(user_id):
   user_id = escape(user_id)
   user = User.query.get(user_id)
   if user:
-    pass
+    form = UpdateHolidaysRequest()
+    form.request.choices = [(0, 'Select one')] + [(i.id, i.id) for i in current_user.holidays_requests]
+
+    if request.method == 'POST' and form.validate_on_submit():
+      request_id = escape(form.request.data)
+      status = escape(form.status.data)
+      comment = escape(form.manager_comment.data)
+
+      find_request = HolidayRequest.query.get(request_id)
+      if not find_request or status not in ['Approved', 'Cancelled', 'Pending','Declined']:
+        flash('Please choose from the list a request ID and a status.','danger')
+        return redirect(url_for('menu'))
+      else:
+        find_request.status = status
+        find_request.manager_comment = comment
+        db.session.commit()
+        flash('Holiday request updated successfuly. An email has been sent to both you and the staff member.','success')
+
+        # sendEmail() manager
+        # sendEmail() user
+
+        return redirect(url_for('menu'))
+
+    return render_template('protected/admin/admin_user.html', user=user, form=form)
   else:
     flash('User id {user_id} does not exist.'.format(user_id=user_id), 'danger')
-  return render_template('protected/admin/admin_user.html', user=user)
+    return redirect(url_for('admin'))
 
 
 # 404 route
