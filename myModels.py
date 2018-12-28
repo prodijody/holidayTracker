@@ -45,12 +45,6 @@ class User(db.Model, UserMixin):
     }
     return holidays
 
-  def get_next_holiday(self):
-    next_holiday = HolidayRequest.query.filter_by(user_id=self.id, status='Approved').first()
-    if not next_holiday:
-      return 0
-    return next_holiday
-
   def get_recover_password_token(self, expires_in=600):
     return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
@@ -97,9 +91,3 @@ class HolidayRequest(db.Model):
     date_to = datetime.strptime(self.date_to, date_format)
     return today > date_to
 
-  def get_days_left_until_next_holidays(self):
-    date_format = "%Y-%m-%d"
-    d1 = datetime.utcnow()
-    d2 = datetime.strptime(self.date_from, date_format)
-    delta = d2 - d1
-    return delta.days

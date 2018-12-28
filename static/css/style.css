@@ -1,5 +1,5 @@
-.card{
-    max-height: 200px!important;
+
+.hol{
     overflow-y: scroll;
 }
 
@@ -7,8 +7,21 @@
     max-width: 350px;
 }
 
-.card{
+.card-custom{
     max-width: 300px!important;
+}
+
+.card-custom-2{
+    max-height: 150px!important;
+
+background: -webkit-linear-gradient(-50deg, rgb(0, 123, 255), rgb(12, 41, 70));
+background: linear-gradient(-50deg, rgb(0, 123, 255), rgb(12, 41, 70));
+
+    color: white;
+    border: none;
+    font-size: 40px;
+
+
 }
 
 a:hover{
