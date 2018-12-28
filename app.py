@@ -235,6 +235,7 @@ def admin_user(user_id):
   if not current_user.is_admin():
     flash('That area is restricted to admins.','info')
     return redirect(url_for('menu'))
+
   user_id = escape(user_id)
   user = User.query.get(user_id)
   if user:
@@ -254,7 +255,7 @@ def admin_user(user_id):
         find_request.status = status
         find_request.manager_comment = comment
         db.session.commit()
-        flash('Holiday request updated successfuly. An email has been sent to both you and the staff member.','success')
+        flash('Holiday request updated successfuly. An email has been sent to the staff member.','success')
 
         html = render_template('email_templates/request_updated.html', date_from=find_request.date_from, date_to=find_request.date_to, comment=find_request.comment, status=find_request.status, manager_comment=find_request.manager_comment)
         sendEmail(email_subject='Update to your holiday request', recipients=[user.email], email_html=html)
@@ -265,6 +266,7 @@ def admin_user(user_id):
   else:
     flash('User id {user_id} does not exist.'.format(user_id=user_id), 'danger')
     return redirect(url_for('admin'))
+
 
 
 # 404 route
