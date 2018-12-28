@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc
@@ -45,6 +45,9 @@ class User(db.Model, UserMixin):
     }
     return holidays
 
+  def get_sorted_holidays_requests(self):
+    return HolidayRequest.query.filter_by(user_id=self.id).order_by(HolidayRequest.timestamp.desc()).all()
+
   def get_recover_password_token(self, expires_in=600):
     return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
@@ -72,22 +75,17 @@ class HolidayRequest(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   timestamp = db.Column(db.DateTime(), default=datetime.utcnow)
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-  date_from = db.Column(db.String(20))
-  date_to = db.Column(db.String(20))
+  date_from = db.Column(db.Date())
+  date_to = db.Column(db.Date())
   comment = db.Column(db.Text())
   status = db.Column(db.String(20))
   manager_comment = db.Column(db.Text(), default=None, nullable=True)
 
   def get_days_difference(self):
-    date_format = "%Y-%m-%d"
-    d1 = datetime.strptime(self.date_from, date_format)
-    d2 = datetime.strptime(self.date_to, date_format)
-    delta = d2 - d1
+    delta = self.date_to - self.date_from
     return delta.days + 1
 
   def is_past(self):
-    date_format = "%Y-%m-%d"
-    today = datetime.utcnow()
-    date_to = datetime.strptime(self.date_to, date_format)
-    return today > date_to
+    today = date.today()
+    return today > self.date_to
 

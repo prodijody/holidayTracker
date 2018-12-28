@@ -15,9 +15,9 @@
   <div class="row text-center" style="padding: 0;">
     <div class="col">
       <div class="card-deck">
-        <div class="card card-custom-2">
+        <div class="card card-custom-1">
           <div class="card-body">
-            <h4 class="card-title">Balance</h4>
+            <h4 class="card-title">Available Balance</h4>
             <p class="card-text">{{ current_user.get_holidays_requests()['balance'] }} days</p>
           </div>
         </div>
@@ -27,63 +27,66 @@
             <p class="card-text">{{ current_user.get_holidays_requests()['days_approved'] }} days</p>
           </div>
         </div>
-        <div class="card hol">
-          <div class="card-body">
-            <h4 class="card-title">Bank Holidays for {{ current_user.get_year() }}</h4>
-            <table class="table table-sm" style="font-size: 12px;">
-              <tbody>
-                  <tr>
-                    <td class="calendar-date"> 1 January</td>
-                    <td class="calendar-day">Tuesday</td>
-                    <td class="calendar-title">New Year’s Day</td>
-                  </tr>
-                  <tr>
-                    <td class="calendar-date">19 April</td>
-                    <td class="calendar-day">Friday</td>
-                    <td class="calendar-title">Good Friday</td>
-                  </tr>
-                  <tr>
-                    <td class="calendar-date">22 April</td>
-                    <td class="calendar-day">Monday</td>
-                    <td class="calendar-title">Easter Monday</td>
-                  </tr>
-                  <tr>
-                    <td class="calendar-date"> 6 May</td>
-                    <td class="calendar-day">Monday</td>
-                    <td class="calendar-title">Early May bank holiday</td>
-                  </tr>
-                  <tr>
-                    <td class="calendar-date">27 May</td>
-                    <td class="calendar-day">Monday</td>
-                    <td class="calendar-title">Spring bank holiday</td>
-                  </tr>
-                  <tr>
-                    <td class="calendar-date">26 August</td>
-                    <td class="calendar-day">Monday</td>
-                    <td class="calendar-title">Summer bank holiday</td>
-                  </tr>
-                  <tr>
-                    <td class="calendar-date">25 December</td>
-                    <td class="calendar-day">Wednesday</td>
-                    <td class="calendar-title">Christmas Day</td>
-                  </tr>
-                  <tr>
-                    <td class="calendar-date">26 December</td>
-                    <td class="calendar-day">Thursday</td>
-                    <td class="calendar-title">Boxing Day</td>
-                  </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
     </div>
   </div>
   <br>
   <div class="row" style="padding: 0;">
-    <div class="col-6">
-      <h4>Approved requests</h4>
-      <table class="table table-responsive">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Bank Holidays for {{ current_user.get_year() }}</h5>
+          <table class="table table-sm" style="font-size: 12px;">
+            <tbody>
+                <tr>
+                  <td class="calendar-date"> 1 January</td>
+                  <td class="calendar-day">Tuesday</td>
+                  <td class="calendar-title">New Year’s Day</td>
+                </tr>
+                <tr>
+                  <td class="calendar-date">19 April</td>
+                  <td class="calendar-day">Friday</td>
+                  <td class="calendar-title">Good Friday</td>
+                </tr>
+                <tr>
+                  <td class="calendar-date">22 April</td>
+                  <td class="calendar-day">Monday</td>
+                  <td class="calendar-title">Easter Monday</td>
+                </tr>
+                <tr>
+                  <td class="calendar-date"> 6 May</td>
+                  <td class="calendar-day">Monday</td>
+                  <td class="calendar-title">Early May bank holiday</td>
+                </tr>
+                <tr>
+                  <td class="calendar-date">27 May</td>
+                  <td class="calendar-day">Monday</td>
+                  <td class="calendar-title">Spring bank holiday</td>
+                </tr>
+                <tr>
+                  <td class="calendar-date">26 August</td>
+                  <td class="calendar-day">Monday</td>
+                  <td class="calendar-title">Summer bank holiday</td>
+                </tr>
+                <tr>
+                  <td class="calendar-date">25 December</td>
+                  <td class="calendar-day">Wednesday</td>
+                  <td class="calendar-title">Christmas Day</td>
+                </tr>
+                <tr>
+                  <td class="calendar-date">26 December</td>
+                  <td class="calendar-day">Thursday</td>
+                  <td class="calendar-title">Boxing Day</td>
+                </tr>
+            </tbody>
+          </table>
+          <i><small>Source: <a target="_blank" href="https://www.gov.uk/bank-holidays">gov.uk/bank-holidays</a></small></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <h4 class="text-center">All your requests</h4>
+      <table class="table">
         <thead>
           <tr>
             <th>ID</th>
@@ -94,13 +97,12 @@
           </tr>
         </thead>
         <tbody>
-          {% for request in current_user.holidays_requests %}
-            {% if (request.status == 'Approved' or request.status == 'Pending' ) and not request.is_past() %}
+          {% for request in current_user.get_sorted_holidays_requests() %}
             <tr>
               <td>{{ request.id }}</td>
               <td>{{ moment(request.timestamp).calendar() }}</td>
-              <td>{{ request.date_from }}</td>
-              <td>{{ request.date_to }}</td>
+              <td>{{ moment(request.date_from).format('DD/MM/YY') }}</td>
+              <td>{{ moment(request.date_to).format('DD/MM/YY') }}</td>
               {% if request.status == 'Approved' %}
                 <td><span class="badge-success badge">{{ request.status }}</span></td>
               {% elif request.status == 'Declined' %}
@@ -109,40 +111,6 @@
                 <td><span class="badge-warning badge">{{ request.status }}</span></td>
               {% endif %}
             </tr>
-            {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="col-6">
-      <h4>Past requests</h4>
-      <table class="table table-responsive">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Requested</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for request in current_user.holidays_requests %}
-            {% if request.is_past() or request.status == 'Declined' or request.status == 'Cancelled'  %}
-            <tr>
-              <td>{{ request.id }}</td>
-              <td>{{ moment(request.timestamp).calendar() }}</td>
-              <td>{{ request.date_from }}</td>
-              <td>{{ request.date_to }}</td>
-              {% if request.status == 'Approved' %}
-                <td><span class="badge-success badge">Approved</span></td>
-              {% elif request.status == 'Declined' %}
-                <td><span class="badge-danger badge">{{ request.status }}</span></td>
-              {% else %}
-                <td><span class="badge-warning badge">{{ request.status }}</span></td>
-              {% endif %}
-            </tr>
-            {% endif %}
           {% endfor %}
         </tbody>
       </table>

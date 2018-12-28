@@ -34,8 +34,8 @@
               <tr>
                 <td>{{ request.id }}</td>
                 <td>{{ moment(request.timestamp).calendar() }}</td>
-                <td>{{ request.date_from }}</td>
-                <td>{{ request.date_to }}</td>
+                <td>{{ moment(request.date_from).format('DD/MM/YY') }}</td>
+                <td>{{ moment(request.date_to).format('DD/MM/YY') }}</td>
                 <td>{{ request.get_days_difference() }} days</td>
                 <td class="font-italic">{{ request.comment }}</td>
                 {% if request.status == 'Approved' %}

@@ -1,27 +1,22 @@
 
-.hol{
-    overflow-y: scroll;
-}
-
 .login_form{
     max-width: 350px;
 }
 
-.card-custom{
-    max-width: 300px!important;
-}
-
-.card-custom-2{
-    max-height: 150px!important;
-
-background: -webkit-linear-gradient(-50deg, rgb(0, 123, 255), rgb(12, 41, 70));
-background: linear-gradient(-50deg, rgb(0, 123, 255), rgb(12, 41, 70));
-
+.card-custom-1{
+    background: linear-gradient(135deg, rgb(0, 123, 255), rgb(40, 167, 69));
     color: white;
     border: none;
     font-size: 40px;
+    opacity: 0.8;
+}
 
-
+.card-custom-2{
+    background: linear-gradient(135deg, rgb(0, 123, 255), rgb(40, 167, 69));
+    color: white;
+    border: none;
+    font-size: 40px;
+    opacity: 0.8;
 }
 
 a:hover{

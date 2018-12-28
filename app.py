@@ -164,14 +164,23 @@ def menu():
   return render_template('protected/menu.html')
 
 
+# Menu route
+@app.route('/test', methods=['GET','POST'])
+@login_required
+def test():
+  return render_template('protected/test.html')
+
+
 @app.route('/request_holidays', methods=['GET','POST'])
 @login_required
 def request_holidays():
   requestHolidaysForm = RequestHolidaysForm()
   if request.method == 'POST' and requestHolidaysForm.validate_on_submit():
-    # escape form input
-    date_from = escape(requestHolidaysForm.date_from.data)
-    date_to = escape(requestHolidaysForm.date_to.data)
+    # escape form input and convert string to date
+    date_format = "%Y-%m-%d"
+
+    date_from = datetime.strptime(escape(requestHolidaysForm.date_from.data), date_format)
+    date_to = datetime.strptime(escape(requestHolidaysForm.date_to.data), date_format)
     comment = escape(requestHolidaysForm.comment.data)
 
     # do some checking before anything else
@@ -230,7 +239,7 @@ def admin_user(user_id):
   user = User.query.get(user_id)
   if user:
     form = UpdateHolidaysRequest()
-    form.request.choices = [(0, 'Select one')] + [(i.id, i.id) for i in current_user.holidays_requests]
+    form.request.choices = [(0, 'Select one')] + [(i.id, i.id) for i in HolidayRequest.query.filter_by(user_id=user_id).all()]
 
     if request.method == 'POST' and form.validate_on_submit():
       request_id = escape(form.request.data)
@@ -240,7 +249,7 @@ def admin_user(user_id):
       find_request = HolidayRequest.query.get(request_id)
       if not find_request or status not in ['Approved', 'Cancelled', 'Pending','Declined']:
         flash('Please choose from the list a request ID and a status.','danger')
-        return redirect(url_for('menu'))
+        return redirect(url_for('admin'))
       else:
         find_request.status = status
         find_request.manager_comment = comment
@@ -250,7 +259,7 @@ def admin_user(user_id):
         html = render_template('email_templates/request_updated.html', date_from=find_request.date_from, date_to=find_request.date_to, comment=find_request.comment, status=find_request.status, manager_comment=find_request.manager_comment)
         sendEmail(email_subject='Update to your holiday request', recipients=[user.email], email_html=html)
 
-        return redirect(url_for('menu'))
+        return redirect(url_for('admin'))
 
     return render_template('protected/admin/admin_user.html', user=user, form=form)
   else:
