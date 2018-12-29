@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block extracss %}
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.css">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{category}}" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="row" style="padding: 0;">
+    <div class="col-4">
+      <h3 class="text-center">List</h3>
+    </div>
+    <div class="col-8">
+      <h3 class="text-center">Calendar</h3>
+      <div id='calendar'></div>
+      <br>
+      <div class="row text-center" style="padding: 0;">
+        <div class="col"><a class="btn btn-outline-info" href="javascript:void(0)" onclick="get_prev_month()">Prev</a></div>
+        <div class="col"><a class="btn btn-outline-info" href="javascript:void(0)" onclick="get_next_month()">Next</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extrajs %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
+<script type="text/javascript">
+  $(function() {
+    $('#calendar').fullCalendar({
+      // put your options and callbacks here
+    })
+  });
+  function get_prev_month(){
+      $('#calendar').fullCalendar('prev');
+  }
+  function get_next_month(){
+    $('#calendar').fullCalendar('next');
+  }
+</script>
+{% endblock %}

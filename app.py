@@ -110,52 +110,6 @@ def recover_password(recover_token):
     return render_template('public/reset_password.html', form=form, token=recover_token)
 
 
-# Add user route
-@app.route('/add_user', methods=['GET','POST'])
-@login_required
-def add_user():
-  if not current_user.is_admin():
-    flash('That area is restricted to admins.','info')
-    return redirect(url_for('menu'))
-
-  existing_users = User.query.all()
-  addUserForm = AddUserForm()
-  addUserForm.system_role.choices = [(i.id, str(i.id) + ') ' + i.name) for i in SystemRole.query.all()]
-  if request.method == 'POST' and addUserForm.validate_on_submit():
-    # escape form input
-    name = escape(addUserForm.name.data)
-    surname = escape(addUserForm.surname.data)
-    email = escape(addUserForm.email.data)
-    system_role = escape(addUserForm.system_role.data)
-    holidays_quota = escape(addUserForm.holidays_quota.data)
-
-    # check email exists
-    email_exists = User.query.filter_by(email=email).first()
-    if email_exists:
-      flash('That email is already registered.','danger')
-      return redirect(url_for('add_user'))
-
-    # add user to db
-    new_user = User(
-      name=name,
-      surname=surname,
-      email=email,
-      password=generate_password_hash(random_string['_'], method='sha256'),
-      system_role=system_role,
-      holidays_quota=holidays_quota)
-    db.session.add(new_user)
-    db.session.commit()
-
-    # prepare and send email to reset password
-    recover_token = new_user.get_recover_password_token()
-    url = url_for('recover_password', recover_token=recover_token, _external=True)
-    html = render_template('email_templates/reset_password.html', confirm_url=url)
-    sendEmail(email_subject='Confirm your account and reset your password.', recipients=[email], email_html=html)
-    flash('User added successfuly! An email has been sent to {email} with instructions to reset the password.'.format(email=email),'success')
-    return redirect(url_for('add_user'))
-
-  return render_template('protected/add_user.html', form=addUserForm, existing_users=existing_users)
-
 
 # Menu route
 @app.route('/menu', methods=['GET','POST'])
@@ -165,10 +119,10 @@ def menu():
 
 
 # Menu route
-@app.route('/test', methods=['GET','POST'])
+@app.route('/calendar', methods=['GET','POST'])
 @login_required
-def test():
-  return render_template('protected/test.html')
+def calendar():
+  return render_template('protected/calendar.html')
 
 
 @app.route('/request_holidays', methods=['GET','POST'])
@@ -218,7 +172,7 @@ def request_holidays():
 #############
 
 # Admin route
-@app.route('/admin', methods=['GET'])
+@app.route('/staff', methods=['GET'])
 @login_required
 def admin():
   if not current_user.is_admin():
@@ -266,6 +220,53 @@ def admin_user(user_id):
   else:
     flash('User id {user_id} does not exist.'.format(user_id=user_id), 'danger')
     return redirect(url_for('admin'))
+
+
+# Add user route
+@app.route('/add_user', methods=['GET','POST'])
+@login_required
+def add_user():
+  if not current_user.is_admin():
+    flash('That area is restricted to admins.','info')
+    return redirect(url_for('menu'))
+
+  existing_users = User.query.all()
+  addUserForm = AddUserForm()
+  addUserForm.system_role.choices = [(i.id, str(i.id) + ') ' + i.name) for i in SystemRole.query.order_by(SystemRole.id.desc()).all()]
+  if request.method == 'POST' and addUserForm.validate_on_submit():
+    # escape form input
+    name = escape(addUserForm.name.data)
+    surname = escape(addUserForm.surname.data)
+    email = escape(addUserForm.email.data)
+    system_role = escape(addUserForm.system_role.data)
+    holidays_quota = escape(addUserForm.holidays_quota.data)
+
+    # check email exists
+    email_exists = User.query.filter_by(email=email).first()
+    if email_exists:
+      flash('That email is already registered.','danger')
+      return redirect(url_for('add_user'))
+
+    # add user to db
+    new_user = User(
+      name=name,
+      surname=surname,
+      email=email,
+      password=generate_password_hash(random_string['_'], method='sha256'),
+      system_role=system_role,
+      holidays_quota=holidays_quota)
+    db.session.add(new_user)
+    db.session.commit()
+
+    # prepare and send email to reset password
+    recover_token = new_user.get_recover_password_token()
+    url = url_for('recover_password', recover_token=recover_token, _external=True)
+    html = render_template('email_templates/reset_password.html', confirm_url=url)
+    sendEmail(email_subject='Confirm your account and reset your password.', recipients=[email], email_html=html)
+    flash('User added successfuly! An email has been sent to {email} with instructions to reset the password.'.format(email=email),'success')
+    return redirect(url_for('add_user'))
+
+  return render_template('protected/add_user.html', form=addUserForm, existing_users=existing_users)
 
 
 

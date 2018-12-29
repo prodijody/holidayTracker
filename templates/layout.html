@@ -20,34 +20,24 @@
 
   <nav class="navbar navbar-default">
     <div class="container-fluid">
-      <div class="navbar-header">
-        <h1><a class="navbar-brand" href="{{ url_for('index') }}" style="margin: 5px 0;">Holiday</a><span style="color: rgb(40, 167, 69);">Tracker</span></h1>
-      </div>
-      <div class="row text-center" style="padding: 0;">
+      <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         {% if current_user.is_authenticated %}
-        <div class="col">
-           <a href="{{ url_for('menu') }}" class="navbar-right">Menu</a>
-        </div>
           {% if current_user.is_admin() %}
-          <div class="col">
-             <a href="{{ url_for('add_user') }}" class="navbar-right">Add User</a>
-          </div>
-          <div class="col">
-             <a href="{{ url_for('admin') }}" class="navbar-right">Admin</a>
-          </div>
+            <a href="{{ url_for('add_user') }}">Add User</a>
+            <a href="{{ url_for('admin') }}">Staff</a>
           {% endif %}
-        <div class="col">
-           <a class="btn btn-success" href="{{ url_for('request_holidays') }}" class="navbar-right">Request Holidays</a>
-        </div>
-        <div class="col">
-           <a href="{{ url_for('logout') }}" class="navbar-right">Logout</a>
-        </div>
+          <a href="{{ url_for('menu') }}">Menu</a>
+          <a href="{{ url_for('calendar') }}">Calendar</a>
+          <a href="{{ url_for('request_holidays') }}">Request Holidays</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
         {% else %}
-        <div class="col">
-           <a href="{{ url_for('index') }}" class="navbar-right">Login</a>
-        </div>
+          <a href="{{ url_for('index') }}">Login</a>
         {% endif %}
       </div>
+
+      <!-- Use any element to open the sidenav -->
+      <span class="btn btn-outline-success" onclick="openNav()">Menu</span>
     </div>
   </nav>
 
@@ -63,6 +53,17 @@
     src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
     integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
     crossorigin="anonymous">
+  </script>
+  <script type="text/javascript">
+    /* Set the width of the side navigation to 250px */
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    /* Set the width of the side navigation to 0 */
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
   </script>
   {% block extrajs %}
   {% endblock %}
