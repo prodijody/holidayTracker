@@ -122,7 +122,8 @@ def menu():
 @app.route('/calendar', methods=['GET','POST'])
 @login_required
 def calendar():
-  return render_template('protected/calendar.html')
+  requests = HolidayRequest.query.all()
+  return render_template('protected/calendar.html', requests=requests)
 
 
 @app.route('/request_holidays', methods=['GET','POST'])

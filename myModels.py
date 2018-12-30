@@ -89,3 +89,5 @@ class HolidayRequest(db.Model):
     today = date.today()
     return today > self.date_to
 
+  def get_user(self):
+    return User.query.get(self.user_id)
