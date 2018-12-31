@@ -71,6 +71,7 @@ class SystemRole(db.Model):
   name = db.Column(db.String(20), nullable=False)
 
 
+
 class HolidayRequest(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   timestamp = db.Column(db.DateTime(), default=datetime.utcnow)

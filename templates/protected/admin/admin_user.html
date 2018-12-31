@@ -12,60 +12,78 @@
     {% endif %}
   {% endwith %}
   <div class="row" style="padding: 0;">
-    <div class="col">
-      <div class="jumbotron">
-        <h1 class="display-3">{{ user.name }} {{ user.surname }}</h1>
-        <p class="lead">Holiday Requests</p>
-        <table class="table table-responsive">
-          <thead>
+    <div class="col-md-8">
+      <h3>{{ user.name }} {{ user.surname }}</h3>
+      <br>
+      <table class="table table-responsive" style="font-size: 13px;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Requested</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Amount</th>
+            <th>Comment</th>
+            <th>Status</th>
+            <th>Available Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for request in user.get_sorted_holidays_requests() %}
             <tr>
-              <th>ID</th>
-              <th>Requested</th>
-              <th>From</th>
-              <th>To</th>
-              <th>Amount</th>
-              <th>Comment</th>
-              <th>Status</th>
-              <th>Available Balance</th>
+              <td>{{ request.id }}</td>
+              <td>{{ moment(request.timestamp).calendar() }}</td>
+              <td>{{ moment(request.date_from).format('DD/MM/YY') }}</td>
+              <td>{{ moment(request.date_to).format('DD/MM/YY') }}</td>
+              <td>{{ request.get_days_difference() }} days</td>
+              <td class="font-italic">{{ request.comment }}</td>
+              {% if request.status == 'Approved' %}
+                <td><span class="badge-success badge">{{ request.status }}</span></td>
+              {% elif request.status == 'Declined' %}
+                <td><span class="badge-danger badge">{{ request.status }}</span></td>
+              {% else %}
+                <td><span class="badge-warning badge">{{ request.status }}</span></td>
+              {% endif %}
+              {% if request.status == 'Pending' %}
+                <td>{{ request.requester.get_holidays_requests()['balance'] }} days</td>
+              {% endif %}
             </tr>
-          </thead>
-          <tbody>
-            {% for request in user.holidays_requests %}
-              <tr>
-                <td>{{ request.id }}</td>
-                <td>{{ moment(request.timestamp).calendar() }}</td>
-                <td>{{ moment(request.date_from).format('DD/MM/YY') }}</td>
-                <td>{{ moment(request.date_to).format('DD/MM/YY') }}</td>
-                <td>{{ request.get_days_difference() }} days</td>
-                <td class="font-italic">{{ request.comment }}</td>
-                {% if request.status == 'Approved' %}
-                  <td><span class="badge-success badge">{{ request.status }}</span></td>
-                {% elif request.status == 'Declined' %}
-                  <td><span class="badge-danger badge">{{ request.status }}</span></td>
-                {% else %}
-                  <td><span class="badge-warning badge">{{ request.status }}</span></td>
-                {% endif %}
-                {% if request.status == 'Pending' %}
-                  <td>{{ request.requester.get_holidays_requests()['balance'] }} days</td>
-                {% endif %}
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        <br>
-        <hr class="my-2">
-        <br>
-        <div class="container text-center" style="max-width: 400px;">
-          <form action="{{ url_for('admin_user',user_id=user.id) }}" method="POST">
-            {{ form.hidden_tag() }}
-            {{ wtf.form_field(form.request) }}
-            {{ wtf.form_field(form.status) }}
-            {{ wtf.form_field(form.manager_comment) }}
-            <input type="submit" class="btn btn-success btn-md" value="Update">
-          </form>
-        </div>
-      </div>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-4">
+      <h3>Update requests</h3>
+      <br>
+      <form action="{{ url_for('admin_user',user_id=user.id) }}" method="POST">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.request) }}
+        {{ wtf.form_field(form.status) }}
+        {{ wtf.form_field(form.manager_comment) }}
+        <input type="submit" class="btn btn-success btn-md" value="Update">
+      </form>
+    </div>
+  </div>
+  <a href="javascript:void(0)" class="text-muted" onclick="show_disable_user_form()">Edit user</a>
+  <div class="row" style="padding: 0;">
+    <div id='form2' class="col-md-6" style="margin: auto; display: none;">
+      <form action="{{ url_for('update_user',user_id=user.id) }}" method="POST">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form2.name) }}
+        {{ wtf.form_field(form2.surname) }}
+        {{ wtf.form_field(form2.email) }}
+        {{ wtf.form_field(form2.system_role) }}
+        {{ wtf.form_field(form2.holidays_quota) }}
+        <input type="submit" class="btn btn-success btn-md" value="Update">
+      </form>
     </div>
   </div>
 </div>
+{% endblock %}
+{% block extrajs %}
+<script type="text/javascript">
+  function show_disable_user_form() {
+    $('#form2').toggle();
+  }
+</script>
 {% endblock %}

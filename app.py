@@ -13,7 +13,7 @@ from itsdangerous import URLSafeTimedSerializer
 from functools import wraps
 from werkzeug.utils import secure_filename
 from myEmail import sendEmail, generate_confirmation_token, confirm_token
-from forms import LoginForm, RecoverPasswordForm, ResetPasswordForm, AddUserForm, RequestHolidaysForm, UpdateHolidaysRequest
+from forms import LoginForm, RecoverPasswordForm, ResetPasswordForm, AddUserForm, RequestHolidaysForm, UpdateHolidaysRequest, UpdateUserForm
 from config_file import random_string
 
 Bootstrap(app)
@@ -181,7 +181,7 @@ def admin():
     return redirect(url_for('menu'))
 
   staff_members = User.query.all()
-  return render_template('protected/admin/admin.html', staff_members=staff_members)
+  return render_template('protected/admin/staff_list.html', staff_members=staff_members)
 
 
 @app.route('/admin/user/<user_id>', methods=['GET','POST'])
@@ -194,6 +194,9 @@ def admin_user(user_id):
   user_id = escape(user_id)
   user = User.query.get(user_id)
   if user:
+    form2 = UpdateUserForm(obj=user)
+    form2.system_role.choices = [(i.id, str(i.id) + ') ' + i.name) for i in SystemRole.query.order_by(SystemRole.id.desc()).all()]
+
     form = UpdateHolidaysRequest()
     form.request.choices = [(0, 'Select one')] + [(i.id, i.id) for i in HolidayRequest.query.filter_by(user_id=user_id).all()]
 
@@ -217,10 +220,39 @@ def admin_user(user_id):
 
         return redirect(url_for('admin'))
 
-    return render_template('protected/admin/admin_user.html', user=user, form=form)
+    return render_template('protected/admin/admin_user.html', user=user, form=form, form2=form2)
   else:
     flash('User id {user_id} does not exist.'.format(user_id=user_id), 'danger')
     return redirect(url_for('admin'))
+
+
+
+@app.route('/admin/user/update_user/<user_id>', methods=['GET','POST'])
+@login_required
+def update_user(user_id):
+  if not current_user.is_admin():
+    flash('That area is restricted to admins.','info')
+    return redirect(url_for('menu'))
+
+  user_id = escape(user_id)
+  user = User.query.get(user_id)
+  if user:
+    form2 = UpdateUserForm()
+    form2.system_role.choices = [(i.id, str(i.id) + ') ' + i.name) for i in SystemRole.query.order_by(SystemRole.id.desc()).all()]
+    if request.method == 'POST' and form2.validate_on_submit():
+      user.name = escape(form2.name.data)
+      user.surname = escape(form2.surname.data)
+      user.email = escape(form2.email.data)
+      user.system_role = escape(form2.system_role.data)
+      user.holidays_quota = escape(form2.holidays_quota.data)
+
+      db.session.commit()
+      flash('User updated successfuly.','success')
+      return redirect(url_for('admin_user', user_id=user_id))
+
+  flash('That user id is not valid.', 'danger')
+  return redirect(url_for('admin_user', user_id=user_id))
+
 
 
 # Add user route
@@ -267,7 +299,7 @@ def add_user():
     flash('User added successfuly! An email has been sent to {email} with instructions to reset the password.'.format(email=email),'success')
     return redirect(url_for('add_user'))
 
-  return render_template('protected/add_user.html', form=addUserForm, existing_users=existing_users)
+  return render_template('protected/admin/add_user.html', form=addUserForm, existing_users=existing_users)
 
 
 

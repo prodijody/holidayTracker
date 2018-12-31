@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{category}}" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="row" style="padding: 0;">
+    <div class="col-md">
+      <h3 class="text-center">Staff</h3>
+      <input class="form-control form-inline" type="text" name="searchStaff" id="searchStaff" placeholder="Search . . . " onkeyup="search()">
+      <br>
+      <table id="table" class="table">
+        <thead>
+          <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Quota</th>
+            <th>Approved</th>
+            <th>Pending</th>
+            <th>Balance</th>
+            <th>System Role</th>
+            <th>Disabled</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for staff in staff_members %}
+            <tr>
+              <td><a href="{{ url_for('admin_user', user_id=staff.id) }}">{{ staff.name }} {{ staff.surname }}</a></td>
+              <td>{{ staff.email }}</td>
+              <td>{{ staff.holidays_quota }} days</td>
+              <td>{{ staff.get_holidays_requests()['days_approved'] }} days</td>
+              {% if staff.get_holidays_requests()['days_unapproved'] > 0 %}
+                <td><span class="badge badge-warning">{{ staff.get_holidays_requests()['days_unapproved'] }} days</span></td>
+              {% else %}
+                <td>{{ staff.get_holidays_requests()['days_unapproved'] }} days</td>
+              {% endif %}
+              <td>{{ staff.get_holidays_requests()['balance'] }} days</td>
+              <td>{{ staff.get_system_role().name }}</td>
+              <td></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extrajs %}
+<script type="text/javascript">
+  function search(){
+    // Declare variables
+    var input, filter, table, tr, td, i, txtValue, searchCol, q;
+    input = document.getElementById("searchStaff");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("table");
+    tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>
+{% endblock %}

@@ -23,13 +23,15 @@
       <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         {% if current_user.is_authenticated %}
-          {% if current_user.is_admin() %}
-            <a href="{{ url_for('add_user') }}">Add User</a>
-            <a href="{{ url_for('admin') }}">Staff</a>
-          {% endif %}
           <a href="{{ url_for('menu') }}">Menu</a>
-          <a href="{{ url_for('calendar') }}">Calendar</a>
+
+          {% if current_user.is_admin() %}
+            <a href="{{ url_for('admin') }}">Staff</a>
+            <a href="{{ url_for('add_user') }}">Add User</a>
+          {% endif %}
+
           <a href="{{ url_for('request_holidays') }}">Request Holidays</a>
+          <a href="{{ url_for('calendar') }}">Calendar</a>
           <a href="{{ url_for('logout') }}">Logout</a>
         {% else %}
           <a href="{{ url_for('index') }}">Login</a>
