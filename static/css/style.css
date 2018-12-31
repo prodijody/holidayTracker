@@ -1,3 +1,8 @@
+.list-group-custom{
+  height: 350px!important;
+  overflow-y: scroll;
+}
+
 .login_form{
     max-width: 350px;
 }

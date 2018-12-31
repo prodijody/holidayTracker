@@ -6,12 +6,12 @@
     {% if messages %}
       {% for category, message in messages %}
       <div class="alert alert-{{category}}" role="alert">
-        {{ message }}
+        {{ message|safe }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
       </div>
       {% endfor %}
     {% endif %}
   {% endwith %}
-  <br>
   <div class="row text-center" style="padding: 0;">
     <div class="col">
       <div class="card-deck">
@@ -33,6 +33,7 @@
   <br>
   <div class="row" style="padding: 0;">
     <div class="col-md-4">
+      <h4 class="text-center">Bank holidays</h4>
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Bank Holidays for {{ current_user.get_year() }}</h5>
@@ -87,34 +88,24 @@
     <br>
     <div class="col-md-8">
       <h4 class="text-center">All your requests</h4>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Requested</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for request in current_user.get_sorted_holidays_requests() %}
-            <tr>
-              <td>{{ request.id }}</td>
-              <td>{{ moment(request.timestamp).calendar() }}</td>
-              <td>{{ moment(request.date_from).format('DD/MM/YY') }}</td>
-              <td>{{ moment(request.date_to).format('DD/MM/YY') }}</td>
-              {% if request.status == 'Approved' %}
-                <td><span class="badge-success badge">{{ request.status }}</span></td>
-              {% elif request.status == 'Declined' %}
-                <td><span class="badge-danger badge">{{ request.status }}</span></td>
-              {% else %}
-                <td><span class="badge-warning badge">{{ request.status }}</span></td>
-              {% endif %}
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      <div class="list-group list-group-custom">
+        {% for request in current_user.get_sorted_holidays_requests() %}
+          <a href="javascript:void(1)" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Request #{{ request.id }}</h5>
+              <small>{{ moment(request.timestamp).calendar() }}</small>
+            </div>
+            <p class="mb-1">Requested <strong>{{ request.get_days_difference() }}</strong> days from <strong>{{ moment(request.date_from).format('DD/MM/YY') }}</strong> to <strong>{{ moment(request.date_to).format('DD/MM/YY') }}</strong> with the comment <i>" <strong>{{ request.comment }}</strong> "</i></p>
+            {% if request.status == 'Approved' %}
+              <td><span class="badge-success badge">{{ request.status }}</span></td>
+            {% elif request.status == 'Declined' %}
+              <td><span class="badge-danger badge">{{ request.status }}</span></td>
+            {% else %}
+              <td><span class="badge-warning badge">{{ request.status }}</span></td>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>

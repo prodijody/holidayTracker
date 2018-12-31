@@ -81,7 +81,7 @@ def index():
         flash('That email is not registered.','info')
       return redirect(url_for('index'))
     else:
-      return render_template('index.html', form=loginForm, form2=resetPasswordForm)
+      return render_template('public/index.html', form=loginForm, form2=resetPasswordForm)
 
 
 @app.route('/recover_password/<recover_token>', methods=['GET','POST'])
@@ -110,20 +110,27 @@ def recover_password(recover_token):
     return render_template('public/reset_password.html', form=form, token=recover_token)
 
 
-
 # Menu route
 @app.route('/menu', methods=['GET','POST'])
 @login_required
 def menu():
+  if current_user.is_admin():
+    pending_requests = len(HolidayRequest.query.filter_by(status='Pending').all())
+
+    if pending_requests > 0:
+      flash('You have <strong>{}</strong> holiday request(s) waiting for un update. <a href="{}">Click here</a>.'.format(pending_requests, url_for('admin')),'info')
+
   return render_template('protected/menu.html')
 
 
-# Menu route
+# Calendar route
 @app.route('/calendar', methods=['GET','POST'])
 @login_required
 def calendar():
-  requests = HolidayRequest.query.all()
-  return render_template('protected/calendar.html', requests=requests)
+  requests = HolidayRequest.query.filter_by(status='Approved').all()
+
+  requests_for_calendar = [{'title' : i.get_user().name, 'start' : str(i.date_from), 'end' : str(i.date_to) } for i in requests]
+  return render_template('protected/calendar.html', requests=requests, requests_for_calendar=requests_for_calendar)
 
 
 @app.route('/request_holidays', methods=['GET','POST'])

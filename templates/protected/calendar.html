@@ -19,19 +19,34 @@
   {% endwith %}
 
   <div class="row" style="padding: 0;">
-    <div class="col-4">
-      <h3 class="text-center">List</h3>
-      {% for r in requests %}
-        {% if current_user.is_admin() %}
-          <p>{{r.id}} {{r.timestamp}} {{r.get_user().name}} {{r.date_from}} {{r.date_to}}</p>
-        {% else %}
-          {% if r.user_id == current_user.id %}
-            <p>{{r.id}} {{r.timestamp}} {{r.get_user().name}} {{r.date_from}} {{r.date_to}}</p>
+    <div class="col-5">
+      <h3 class="text-center">Approved requests</h3>
+      <br>
+      <div class="list-group">
+        {% for r in requests %}
+          {% if current_user.is_admin() %}
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{r.get_user().name}} {{r.get_user().surname}}</h5>
+                <small>{{ moment(r.timestamp).calendar() }} </small>
+              </div>
+              <p class="mb-1">Requested <strong>{{ r.get_days_difference() }}</strong> days from <strong>{{ moment(r.date_from).format('DD/MM/YY') }}</strong> to <strong>{{ moment(r.date_to).format('DD/MM/YY') }}</strong>.</p>
+            </a>
+          {% else %}
+            {% if r.user_id == current_user.id %}
+              <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{r.get_user().name}} {{r.get_user().surname}}</h5>
+                  <small>{{ moment(r.timestamp).calendar() }} </small>
+                </div>
+                <p class="mb-1">Requested <strong>{{ r.get_days_difference() }}</strong> days from <strong>{{ moment(r.date_from).format('DD/MM/YY') }}</strong> to <strong>{{ moment(r.date_to).format('DD/MM/YY') }}</strong>.</p>
+              </a>
+            {% endif %}
           {% endif %}
-        {% endif %}
-      {% endfor %}
+        {% endfor %}
+      </div>
     </div>
-    <div class="col-8">
+    <div class="col-7">
       <h3 class="text-center">Calendar</h3>
       <span id="loading"></span>
       <div id='calendar'></div>
@@ -49,13 +64,14 @@
 <script type="text/javascript">
   $('#loading').text('Loading...')
   $(function() {
-
-    $('#calendar').fullCalendar({
-      // put your options and callbacks here
-
-    })
-    $('#loading').text('')
+    o = {
+      events: {{ requests_for_calendar|safe }},
+      eventColor: '#378006'
+    };
+    $('#calendar').fullCalendar(o);
+    $('#loading').text('');
   });
+
   function get_prev_month(){
       $('#calendar').fullCalendar('prev');
   }

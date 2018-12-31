@@ -26,7 +26,7 @@
           <a href="{{ url_for('menu') }}">Menu</a>
 
           {% if current_user.is_admin() %}
-            <a href="{{ url_for('admin') }}">Staff</a>
+            <a href="{{ url_for('admin') }}">Staff List</a>
             <a href="{{ url_for('add_user') }}">Add User</a>
           {% endif %}
 
