@@ -7,7 +7,7 @@ from flask_bootstrap import Bootstrap
 from flask_login import login_required, current_user, LoginManager, login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date, timedelta
-from sqlalchemy import desc
+from sqlalchemy import desc, asc
 from myModels import app
 from itsdangerous import URLSafeTimedSerializer
 from functools import wraps
@@ -127,9 +127,8 @@ def menu():
 @app.route('/calendar', methods=['GET','POST'])
 @login_required
 def calendar():
-  requests = HolidayRequest.query.filter_by(status='Approved').all()
-
-  requests_for_calendar = [{'title' : i.get_user().name, 'start' : str(i.date_from), 'end' : str(i.date_to) } for i in requests]
+  requests = HolidayRequest.query.filter_by(status='Approved').order_by(HolidayRequest.date_from.asc()).all()
+  requests_for_calendar = [{'title' : i.get_user().name + ' ' + i.get_user().surname, 'start' : str(i.date_from), 'end' : str(i.date_to), 'url': url_for('open_request', request_id=i.id)} for i in requests]
   return render_template('protected/calendar.html', requests=requests, requests_for_calendar=requests_for_calendar)
 
 
@@ -174,6 +173,31 @@ def request_holidays():
   return render_template('protected/request_holidays.html', form=requestHolidaysForm)
 
 
+@app.route('/calendar/request/<request_id>', methods=['GET','POST'])
+@login_required
+def open_request(request_id):
+  req = escape(request_id)
+  request_exists = HolidayRequest.query.get(req)
+  if request_exists:
+    if request_exists.user_id == current_user.id or current_user.is_admin():
+      form = RequestHolidaysForm(obj=request_exists)
+
+      if request.method == 'POST' and form.validate_on_submit():
+        request_exists.date_from = form.date_from.data
+        request_exists.date_to = form.date_to.data
+        request_exists.comment = form.comment.data
+        db.session.commit()
+        flash('Your request has been updated successfuly.','success')
+        return redirect(url_for('open_request', request_id=request_id))
+
+      return render_template('protected/open_request.html', request=request_exists, form=form)
+    else:
+      flash('Noting to see here, details of that holiday request are private.','info')
+      return redirect(url_for('calendar'))
+  else:
+    flash('That request id {} is invalid.'.format(request_id),'danger')
+    return redirect(url_for('calendar'))
+
 
 #############
 #'''Admin'''#
@@ -190,7 +214,7 @@ def admin():
   staff_members = User.query.all()
   return render_template('protected/admin/staff_list.html', staff_members=staff_members)
 
-
+# Admin user route
 @app.route('/admin/user/<user_id>', methods=['GET','POST'])
 @login_required
 def admin_user(user_id):
@@ -232,8 +256,7 @@ def admin_user(user_id):
     flash('User id {user_id} does not exist.'.format(user_id=user_id), 'danger')
     return redirect(url_for('admin'))
 
-
-
+# Admin update user route
 @app.route('/admin/user/update_user/<user_id>', methods=['GET','POST'])
 @login_required
 def update_user(user_id):
@@ -259,8 +282,6 @@ def update_user(user_id):
 
   flash('That user id is not valid.', 'danger')
   return redirect(url_for('admin_user', user_id=user_id))
-
-
 
 # Add user route
 @app.route('/add_user', methods=['GET','POST'])
@@ -307,7 +328,6 @@ def add_user():
     return redirect(url_for('add_user'))
 
   return render_template('protected/admin/add_user.html', form=addUserForm, existing_users=existing_users)
-
 
 
 # 404 route

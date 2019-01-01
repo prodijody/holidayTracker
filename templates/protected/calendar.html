@@ -3,7 +3,7 @@
 
 {% block extracss %}
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.css">
+<link rel="stylesheet" media="print"  type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.css">
 {% endblock %}
 
 {% block body %}
@@ -13,51 +13,20 @@
       {% for category, message in messages %}
       <div class="alert alert-{{category}}" role="alert">
         {{ message }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
       </div>
       {% endfor %}
     {% endif %}
   {% endwith %}
-
   <div class="row" style="padding: 0;">
-    <div class="col-5">
-      <h3 class="text-center">Approved requests</h3>
-      <br>
-      <div class="list-group">
-        {% for r in requests %}
-          {% if current_user.is_admin() %}
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{r.get_user().name}} {{r.get_user().surname}}</h5>
-                <small>{{ moment(r.timestamp).calendar() }} </small>
-              </div>
-              <p class="mb-1">Requested <strong>{{ r.get_days_difference() }}</strong> days from <strong>{{ moment(r.date_from).format('DD/MM/YY') }}</strong> to <strong>{{ moment(r.date_to).format('DD/MM/YY') }}</strong>.</p>
-            </a>
-          {% else %}
-            {% if r.user_id == current_user.id %}
-              <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                <div class="d-flex w-100 justify-content-between">
-                  <h5 class="mb-1">{{r.get_user().name}} {{r.get_user().surname}}</h5>
-                  <small>{{ moment(r.timestamp).calendar() }} </small>
-                </div>
-                <p class="mb-1">Requested <strong>{{ r.get_days_difference() }}</strong> days from <strong>{{ moment(r.date_from).format('DD/MM/YY') }}</strong> to <strong>{{ moment(r.date_to).format('DD/MM/YY') }}</strong>.</p>
-              </a>
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-      </div>
-    </div>
-    <div class="col-7">
+    <div class="col">
       <h3 class="text-center">Calendar</h3>
       <span id="loading"></span>
       <div id='calendar'></div>
-      <br>
-      <div class="row text-center" style="padding: 0;">
-        <div class="col"><a class="btn btn-outline-info" href="javascript:void(0)" onclick="get_prev_month()">Prev</a></div>
-        <div class="col"><a class="btn btn-outline-info" href="javascript:void(0)" onclick="get_next_month()">Next</a></div>
-      </div>
     </div>
   </div>
 </div>
+
 {% endblock %}
 {% block extrajs %}
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
@@ -65,18 +34,19 @@
   $('#loading').text('Loading...')
   $(function() {
     o = {
+      height: 500,
+      themeSystem: 'bootstrap4',
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
+      },
       events: {{ requests_for_calendar|safe }},
-      eventColor: '#378006'
+      eventColor: '#378006',
+      eventTextColor: '#fff'
     };
     $('#calendar').fullCalendar(o);
     $('#loading').text('');
   });
-
-  function get_prev_month(){
-      $('#calendar').fullCalendar('prev');
-  }
-  function get_next_month(){
-    $('#calendar').fullCalendar('next');
-  }
 </script>
 {% endblock %}

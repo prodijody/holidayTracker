@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block extracss %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/time_line.css') }}">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+{% block body %}
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{category}}" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Modify your request</h4>
+      <small><i>If you wish to <strong>cancel</strong> the request, update the comment section and explain your reasons.</i></small>
+      <br><br>
+      <form id='request_holidays_form' action="{{ url_for('open_request', request_id=request.id) }}" method="POST">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.date_from) }}
+        {{ wtf.form_field(form.date_to) }}
+        {{ wtf.form_field(form.comment) }}
+        <input type="submit" class="btn btn-success btn-md" value="Update">
+      </form>
+    </div>
+  </div>
+  <h4 class="text-center">This request's history</h4>
+  <br>
+  <div class="row">
+    <div class="timeline-centered">
+      <article class="timeline-entry">
+        <div class="timeline-entry-inner">
+          <time class="timeline-time" datetime="2014-01-10T03:45"><span>03:45 AM</span> <span>Today</span></time>
+
+          <div class="timeline-icon bg-success">
+            <i class="entypo-feather"></i>
+          </div>
+
+          <div class="timeline-label">
+            <h2><a href="#">Art Ramadani</a> <span>posted a status update</span></h2>
+            <p>Tolerably earnestly middleton extremely distrusts she boy now not. Add and offered prepare how cordial two promise. Greatly who affixed suppose but enquire compact prepare all put. Added forth chief trees but rooms think may.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extrajs %}
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $( function() {
+      $( "#datepicker1" ).datepicker({ dateFormat: 'dd-mm-yy' });
+      $( "#datepicker2" ).datepicker({ dateFormat: 'dd-mm-yy' });
+      $( "#datepicker1" ).datepicker();
+      $( "#datepicker2" ).datepicker();
+    } );
+  </script>
+{% endblock %}
