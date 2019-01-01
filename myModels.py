@@ -26,6 +26,7 @@ class User(db.Model, UserMixin):
   system_role = db.Column(db.Integer)
   holidays_requests = db.relationship('HolidayRequest', backref='requester')
   holidays_quota = db.Column(db.Integer)
+  active = db.Column(db.Boolean(), default=True)
 
   def is_admin(self):
     admin_role = SystemRole.query.filter_by(name='Admin').first().id

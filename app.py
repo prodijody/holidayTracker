@@ -5,6 +5,7 @@ from flask import url_for, render_template, flash, redirect, request, escape
 from flask_moment import Moment
 from flask_bootstrap import Bootstrap
 from flask_login import login_required, current_user, LoginManager, login_user, logout_user
+from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date, timedelta
 from sqlalchemy import desc, asc
@@ -23,6 +24,8 @@ login_manager.login_view = 'login'
 
 moment = Moment(app)
 from myModels import db, User, SystemRole, HolidayRequest
+
+migrate = Migrate(app, db)
 
 # USER LOADER
 @login_manager.user_loader
