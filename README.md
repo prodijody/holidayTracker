@@ -1,4 +1,4 @@
-# Getting started (Windows 10)
+## Getting started (Windows 10)
 
 ### Create a virtual env first in any folder
 In the prompt cmd:
@@ -28,6 +28,7 @@ In the prompt cmd:
 
 ### Create your config file with the following python dicts
 ```
+# This is for a gmail account. You will need to [allow less secure](https://myaccount.google.com/lesssecureapps?pli=1) apps to be able to send email through the app.
 mail_settings = {
   'MAIL_USERNAME' : 'your email',
   'MAIL_PASSWORD' : 'your password',
