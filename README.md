@@ -16,13 +16,9 @@ In the prompt cmd:
 (cmd) activate
 ```
 
-### Clone the repo
+### Clone the repo and install requirments
 ```
 (venv) clone https://github.com/j-000/holidayTracker
-```
-
-### Install the requirements
-```
 (venv) pip install -r requirements
 ```
 
@@ -54,22 +50,19 @@ random_string = {
 }
 ```
 
-save the file as 'config_file.py'
+save the file as **config_file.py**.
 
-### Start Python shell
+### Start Python shell and create DB
+This will populate the db with your User account that has your email and password to login into the app.
 ```
 (venv) python
 >>> from helperFunctions import restartDB
-```
-
-### Start the DataBase
-This will populate the db with your User account that has your email and password to login into the app.
-```
 >>> restartDB()
 >>> exit()
 (venv) python app.py
 ```
-### Running
+
+### Run it
 ```
  Serving Flask app "app" (lazy loading)
  * Environment: production
