@@ -1,18 +1,10 @@
 ## Getting started (Windows 10)
 
-### Create a virtual env first in any folder
+### Create a virtual env first in any folder and activate it
 In the prompt cmd:
 ```
 (cmd) virtualenv c:/desktop/path/to/folder/
-```
-
-### cd into the Scripts folder in your virtual env folder
-```
 (cmd) cd c:/path/to/folder/Scripts
-```
-
-### Activate the vritual env
-```
 (cmd) activate
 ```
 
