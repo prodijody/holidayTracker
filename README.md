@@ -51,11 +51,11 @@ This will populate the db with your User account that has your email and passwor
 >>> from helperFunctions import restartDB
 >>> restartDB()
 >>> exit()
-(venv) python app.py
 ```
 
 ### Run it
 ```
+(venv) python app.py
  Serving Flask app "app" (lazy loading)
  * Environment: production
    WARNING: Do not use the development server in a production environment.
