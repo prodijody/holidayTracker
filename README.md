@@ -1,32 +1,32 @@
 # Getting started (Windows 10)
 
-## Create a virtual env first in any folder
+### Create a virtual env first in any folder
 In the prompt cmd:
 ```
 (cmd) virtualenv c:/desktop/path/to/folder/
 ```
 
-## cd into the Scripts folder in your virtual env folder
+### cd into the Scripts folder in your virtual env folder
 ```
 (cmd) cd c:/path/to/folder/Scripts
 ```
 
-## Activate the vritual env
-'''
+### Activate the vritual env
+```
 (cmd) activate
-'''
+```
 
-## Clone the repo
+### Clone the repo
 ```
 (venv) clone https://github.com/j-000/holidayTracker
 ```
 
-## Install the requirements
+### Install the requirements
 ```
 (venv) pip install -r requirements
 ```
 
-## Create your config file with the following python dicts
+### Create your config file with the following python dicts
 ```
 mail_settings = {
   'MAIL_USERNAME' : 'your email',
@@ -55,20 +55,20 @@ random_string = {
 
 save the file as 'config_file.py'
 
-## Start Python shell
+### Start Python shell
 ```
 (venv) python
 >>> from helperFunctions import restartDB
 ```
 
-## Start the DataBase
+### Start the DataBase
 This will populate the db with your User account that has your email and password to login into the app.
 ```
 >>> restartDB()
 >>> exit()
 (venv) python app.py
 ```
-## Running
+### Running
 ```
  Serving Flask app "app" (lazy loading)
  * Environment: production
