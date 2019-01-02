@@ -22,7 +22,7 @@ def create_system_admin():
     surname=admin_user['SURNAME'],
     system_role=admin_role,
     email=admin_user['EMAIL'],
-    password=generate_password_hash(random_string['_'], method='sha256'),
+    password=generate_password_hash(admin_user['APP_PASSWORD'], method='sha256'),
     holidays_quota=admin_user['HOLIDAYS_QUOTA'])
   db.session.add(system_admin)
   db.session.commit()
