@@ -1,21 +1,16 @@
 ## Getting started (Windows 10)
 
-### Create a virtual env first in any folder and activate it
-In the prompt cmd:
-```
-(cmd) virtualenv c:/desktop/path/to/folder/
-(cmd) cd c:/path/to/folder/Scripts
-(cmd) activate
-```
-
-### Clone the repo and install requirments
+##### 1) Clone the repo and install the requirements
+Do this in a virtualenv folder, preferably. See [virtualenv for python](https://docs.python-guide.org/dev/virtualenvs/) for details.
 ```
 (venv) clone https://github.com/j-000/holidayTracker
 (venv) pip install -r requirements
 ```
 
-### Create your config file with the following python dicts
-This is for a gmail account. You will need to [allow less secure](https://myaccount.google.com/lesssecureapps?pli=1) apps to be able to send email through the app.
+##### 2) Create your config file with the following python dicts
+**'mail_settings'** - works on gmail accounts only. You will need to [allow less secure apps](https://myaccount.google.com/lesssecureapps?pli=1) to be able to send email through the application.
+
+**admin_user** - The email described in this dict will be the one used to send emails and alerts via the application.
 ```
 mail_settings = {
   'MAIL_USERNAME' : 'your email',
@@ -42,10 +37,10 @@ random_string = {
 }
 ```
 
-save the file as **config_file.py**.
+save the file as **config_file.py** in the same directory as **app.py**.
 
-### Start Python shell and create DB
-This will populate the db with your User account that has your email and password to login into the app.
+##### 3) Start the Python shell in the terminal and initialize the database
+This will populate the database with your User account.
 ```
 (venv) python
 >>> from helperFunctions import restartDB
@@ -53,17 +48,9 @@ This will populate the db with your User account that has your email and passwor
 >>> exit()
 ```
 
-### Run it
+##### 4) Run it and log in
 ```
 (venv) python app.py
-
- Serving Flask app "app" (lazy loading)
- * Environment: production
-   WARNING: Do not use the development server in a production environment.
-   Use a production WSGI server instead.
- * Debug mode: on
- * Restarting with stat
- * Debugger is active!
- * Debugger PIN: 123-456-789
- * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 ```
+To login use the '**EMAIL**' and '**APP_PASSWORD**' details from the config file.
+
