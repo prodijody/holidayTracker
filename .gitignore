@@ -4,5 +4,5 @@ Lib
 Scripts
 tcl
 config_file.py
-actionstep_holidays.db
+data.db
 migrations

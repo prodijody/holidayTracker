@@ -33,3 +33,6 @@ def restartDB():
   create_system_roles()
   create_system_admin()
   return
+
+if __name__ == "__main__":
+  restartDB()
