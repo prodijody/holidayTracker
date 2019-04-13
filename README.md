@@ -23,7 +23,8 @@ More details of modules used in the [requirements.txt file](https://github.com/j
 ***
 
 Login page. It uses [Bootstrap](https://getbootstrap.com/) for the layout and styling. Authentication and session is done thanks to Flask.
-![alt text](https://github.com/j-000/holidayTracker/tree/master/repo_images/c1.PNG "holidayTacker login page")
+
+![](https://github.com/j-000/holidayTracker/tree/master/repo_images/c1.PNG "holidayTacker login page")
 
 
 Bootstrap layout for responsive web pages both in a desktop and mobile environments.
