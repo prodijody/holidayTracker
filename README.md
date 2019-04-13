@@ -22,25 +22,25 @@ More details of modules used in the [requirements.txt file](https://github.com/j
 
 ***
 
-Login page. It uses [Bootstrap](https://getbootstrap.com/) for the layout and styling. Authentication and session is done thanks to Flask.
+Login page uses [Bootstrap](https://getbootstrap.com/) for the layout and styling. Authentication and session is done thanks to Flask.
 
-![](https://github.com/j-000/holidayTracker/tree/master/repo_images/c1.PNG "holidayTacker login page")
+![](repo_images/c1.PNG)
 
 
 Bootstrap layout for responsive web pages both in a desktop and mobile environments.
-![alt text](https://github.com/j-000/holidayTracker/tree/master/repo_images/c2.PNG "holidayTracker main area" )
+![](repo_images/c2.PNG)
 
 
 The server side email sending is done via an asynchromnous thread using Google's smtp and [Flask-Mail](https://pythonhosted.org/Flask-Mail/).
-![alt text](https://github.com/j-000/holidayTracker/tree/master/repo_images/c6.PNG "holidayTracker request sent page" )
-![alt text](https://github.com/j-000/holidayTracker/tree/master/repo_images/c7.PNG "holidayTracker request confirmation page" )
+![](repo_images/c6.PNG)
+![](repo_images/c7.PNG)
 
-![alt text](https://github.com/j-000/holidayTracker/tree/master/repo_images/c4.PNG "holidayTracker add user page" )
-![alt text](https://github.com/j-000/holidayTracker/tree/master/repo_images/c5.PNG "holidayTracker add user confirmation page" )
+![](repo_images/c4.PNG)
+![](repo_images/c5.PNG)
 
 
 In this route I wanted to use a calendar view and decided to use [FullCalendar.js](https://fullcalendar.io/) plugin to accomplish that. 
-![alt text](https://github.com/j-000/holidayTracker/tree/master/repo_images/c8.PNG "holidayTracker callendar view " )
+![](repo_images/c8.PNG)
 
 
 
