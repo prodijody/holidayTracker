@@ -24,19 +24,19 @@ More details of modules used in the [requirements.txt file](https://github.com/j
 
 Login page uses [Bootstrap](https://getbootstrap.com/) for the layout and styling. Authentication and session is done thanks to Flask.
 
-![](repo_images/c1.PNG)
+<img src="repo_images/c1.PNG" />
 
 
 Bootstrap layout for responsive web pages both in a desktop and mobile environments.
-![](repo_images/c2.PNG)
+<img src="repo_images/c2.PNG" width=750/>
 
 
 The server side email sending is done via an asynchromnous thread using Google's smtp and [Flask-Mail](https://pythonhosted.org/Flask-Mail/).
-![](repo_images/c6.PNG)
-![](repo_images/c7.PNG)
+<img src="repo_images/c6.PNG" width=750/>
+<img src="repo_images/c7.PNG" width=750/>
 
-![](repo_images/c4.PNG)
-![](repo_images/c5.PNG)
+<img src="repo_images/c4.PNG" width=750/>
+<img src="repo_images/c5.PNG" width=750/>
 
 
 In this route I wanted to use a calendar view and decided to use [FullCalendar.js](https://fullcalendar.io/) plugin to accomplish that. 
