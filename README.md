@@ -4,7 +4,7 @@
 
 
 Main features:
-+ RBAC - Role BAsed Access Control (Admin/User)
++ RBAC - Role Based Access Control (Admin/User)
 + Email integration 
 + Confirm account through email - uses jwt tokens
 + Admin area to manage Users and Requests
