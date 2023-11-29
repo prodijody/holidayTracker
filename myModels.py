@@ -36,15 +36,16 @@ class User(db.Model, UserMixin):
     return SystemRole.query.filter_by(id=self.system_role).first()
 
   def get_holidays_requests(self):
-    days_unapproved = sum([h.get_days_difference() for h in self.holidays_requests if h.status == 'Pending'])
-    days_approved = sum([h.get_days_difference() for h in self.holidays_requests if h.status == 'Approved'])
+    days_unapproved = sum(h.get_days_difference() for h in self.holidays_requests
+                          if h.status == 'Pending')
+    days_approved = sum(h.get_days_difference() for h in self.holidays_requests
+                        if h.status == 'Approved')
 
-    holidays = {
-      'days_unapproved' : days_unapproved,
-      'days_approved' : days_approved,
-      'balance' : self.holidays_quota - days_approved
+    return {
+        'days_unapproved': days_unapproved,
+        'days_approved': days_approved,
+        'balance': self.holidays_quota - days_approved,
     }
-    return holidays
 
   def get_sorted_holidays_requests(self):
     return HolidayRequest.query.filter_by(user_id=self.id).order_by(HolidayRequest.timestamp.desc()).all()
